@@ -11,6 +11,10 @@ Replication of Statiscical Methodology: Provide an attempt to replicate results 
 
 Ethical Consideration Analysis: Delve into the ethical implications of using ML for injury prediction, focusing on privacy, bias, fairness, impact on players' careers, and the balance between technological advancement and moral responsibility.
 
+# Parts
+Midterm: (Midterm.Rdm)
+Final: (Final.Rdm)
+
 # Acknowledgments
 The original authors of the paper, Karnuta et al., for their groundbreaking work in applying ML to injury prediction in MLB. The paper is provided here [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7672741/].
 
