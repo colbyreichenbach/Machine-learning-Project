@@ -13,6 +13,7 @@ Ethical Consideration Analysis: Delve into the ethical implications of using ML 
 
 # Parts
 Midterm: (Midterm.Rdm)
+
 Final: (Final.Rdm)
 
 # Acknowledgments
