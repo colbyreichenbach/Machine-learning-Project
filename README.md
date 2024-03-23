@@ -11,7 +11,7 @@ Ethical Consideration Analysis: Delve into the ethical implications of using ML 
 # Parts
 [Midterm](Midterm1.Rmd) : R markdown file of midterm.
 
-[Midterm](Midterm1.Pdf) : PDF of midterm.
+[Midterm](Midterm1.pdf) : PDF of midterm.
 
 [Final](Final.Rmd)
 
