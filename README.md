@@ -9,7 +9,8 @@ Replication of Statiscical Methodology: Provide an attempt to replicate results 
 Ethical Consideration Analysis: Delve into the ethical implications of using ML for injury prediction, focusing on privacy, bias, fairness, impact on players' careers, and the balance between technological advancement and moral responsibility.
 
 # Parts
-[Midterm](Midterm.Rmd)
+[Midterm](Midterm1.Rmd) : R markdown file of midterm.
+[Midterm](Midterm1.Pdf) : PDF of midterm.
 
 [Final](Final.Rmd)
 
