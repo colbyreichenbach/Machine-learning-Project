@@ -1,0 +1,133 @@
+---
+title: "FinalBatter"
+author: "Colby Reichenbach"
+date: "2024-04-29"
+output:
+  pdf_document: default
+  html_document: default
+---
+Machine Learning Models for Predicting Batter Injuries:
+KNN:
+```{r}
+library(caret)
+library(tidyverse)  # for data manipulation
+library(pROC)       # for ROC curve analysis
+
+data <- read_csv("/Users/colbyreichenbach/desktop/Baseball Injury Prediction/merged_batting_data.csv") %>%
+  select(-Player) %>%
+  mutate_at(vars(contains("DL")), as.numeric) %>%
+  mutate(Injured = factor(Injured, levels = c("No", "Yes")))  # Ensuring it's treated as a categorical variable
+
+# Normalize the data: KNN works better with normalized data
+set.seed(123)
+preProcValues <- preProcess(data, method = c("center", "scale"))
+dataNorm <- predict(preProcValues, data)
+
+# Splitting data into training and testing sets
+trainingSamples <- createDataPartition(dataNorm$Injured, p = 0.75, list = FALSE)
+trainData <- dataNorm[trainingSamples, ]
+testData <- dataNorm[-trainingSamples, ]
+
+# Define training control with 10-fold cross-validation
+trainControl <- trainControl(method = "cv", number = 10, savePredictions = "final", classProbs = TRUE)
+
+# Train the KNN model
+knnFit <- train(Injured ~ ., data = trainData, method = 'knn',
+                trControl = trainControl,
+                preProcess = "scale",
+                tuneLength = 10)
+
+# Make predictions and calculate probability scores for ROC
+predictions <- predict(knnFit, newdata = testData)
+prob_predictions <- predict(knnFit, testData, type = "prob")
+
+# Calculate and plot ROC curve
+roc_result <- roc(testData$Injured, prob_predictions$Yes)
+plot(roc_result, main = "ROC Curve for KNN Model")
+auc_value <- auc(roc_result)
+
+# Calculate accuracy
+accuracy <- sum(predictions == testData$Injured) / nrow(testData)
+
+```
+```{r}
+print(paste("AUC:", auc_value))
+print(paste("Accuracy:", accuracy))
+confusionMatrix(predictions, testData$Injured)
+# Assuming knnFit is your trained model object
+best_k <- knnFit$bestTune$k
+print(best_k)
+```
+Logistic Regression
+```{r}
+library(caret)
+library(tidyverse)  # for data manipulation
+library(pROC)       # for ROC curve analysis
+
+data <- read_csv("/Users/colbyreichenbach/desktop/Baseball Injury Prediction/merged_batting_data.csv") %>%
+  select(-Player, -"Day to Day", -"10-day DL", -"15-day DL", -"60-day DL") %>%
+  mutate_at(vars(contains("DL")), as.numeric) %>%
+  mutate(Injured = factor(Injured, levels = c("No", "Yes")))  # Ensuring it's treated as a categorical variable
+# Normalize the data: Logistic regression benefits from normalization
+set.seed(123)
+preProcValues <- preProcess(data, method = c("center", "scale"))
+dataNorm <- predict(preProcValues, data)
+
+# Splitting data into training and testing sets
+trainingSamples <- createDataPartition(dataNorm$Injured, p = 0.75, list = FALSE)
+trainData <- dataNorm[trainingSamples, ]
+testData <- dataNorm[-trainingSamples, ]
+
+# Define training control with 10-fold cross-validation
+trainControl <- trainControl(method = "cv", number = 10, savePredictions = "final", classProbs = TRUE)
+
+# Train the logistic regression model
+logisticFit <- train(Injured ~ ., data = trainData, method = 'glm',
+                     family = binomial(),
+                     trControl = trainControl,
+                     preProcess = "scale")
+
+# Make predictions and calculate probability scores for ROC
+predictions <- predict(logisticFit, newdata = testData)
+prob_predictions <- predict(logisticFit, testData, type = "prob")
+
+# Calculate and plot ROC curve
+roc_result <- roc(testData$Injured, prob_predictions$Yes)
+plot(roc_result, main = "ROC Curve for Logistic Regression Model")
+auc_value <- auc(roc_result)
+
+# Calculate accuracy
+accuracy <- sum(predictions == testData$Injured) / nrow(testData)
+
+```
+
+```{r}
+print(paste("AUC:", auc_value))
+print(paste("Accuracy:", accuracy))
+confusionMatrix(predictions, testData$Injured)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(caret)
+library(tidyverse)  # for data manipulation
+
+# Extract the model coefficients
+coefficients <- coef(logisticFit$finalModel)
+
+# Standardize the coefficients
+standardized_coefficients <- coefficients[-1] / apply(trainData[, -which(names(trainData) == "Injured")], 2, sd)
+
+# Create a data frame with the variable names and their standardized coefficients
+importance <- data.frame(
+  Variable = names(standardized_coefficients),
+  Standardized_Coefficient = abs(standardized_coefficients)
+)
+
+# Sort the data frame by the absolute value of the standardized coefficients
+importance <- importance %>%
+  arrange(desc(Standardized_Coefficient))
+
+# Display the ranked importance
+print(importance)
+
+```
