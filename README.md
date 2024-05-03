@@ -13,7 +13,9 @@ Ethical Consideration Analysis: Delve into the ethical implications of using ML 
 
 [Midterm](Midterm1.pdf) : PDF of midterm.
 
-[Final](Final.Rmd)
+[Final](FinalProject.Rmd) :R markdown file of final.
+
+[Final](FinalProject.pdf) :PDF of final.
 
 # Acknowledgments
 The original authors of the paper, Karnuta et al., for their work in applying ML to injury prediction in MLB. The paper is provided here [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7672741/].
